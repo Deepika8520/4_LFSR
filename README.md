@@ -67,12 +67,15 @@ The project includes the following circuit designs:
 ![D Flip-Flop Schematic](D_schematic.jpeg)
 
 ![D Flip-Flop Testbench](D_ff_tb.jpeg)
+### 4. 4-Bit LFSR 
 
-### 4. 4-Bit LFSR Layout
+![4-Bit LFSR](4_LFSR.jpeg)
+
+### 5. 4-Bit LFSR Layout
 
 ![4-Bit LFSR Layout](4_LFSR_lyt.jpeg)
 
-### 5. Simulation Results
+### 6. Simulation Results
 
 ![Simulation Waveform](waveform.jpeg)
 
