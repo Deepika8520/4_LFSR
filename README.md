@@ -324,3 +324,42 @@ GitHub: [Deepika8520](https://github.com/Deepika8520)
 ## Project Repository
 
 [4-Bit LFSR – GitHub Repository](https://github.com/Deepika8520/4_LFSR)
+
+## Measurements extracted from the supplied transient waveform
+
+The supplied transient waveform covers approximately 0 ns to 150 ns. The clock (CLK) repeats at approximately 10 ns intervals, with a high interval of approximately 5 ns and a low interval of approximately 5 ns.
+
+| Waveform-derived parameter | Approximate value | Basis |
+|---|---:|---|
+| Clock period | 10 ns | Repeating CLK rising edges |
+| Clock frequency | 100 MHz | 1 / 10 ns |
+| Clock high time | 5 ns | CLK high interval |
+| Clock low time | 5 ns | CLK low interval |
+| Clock duty cycle | 50% | 5 ns / 10 ns × 100 |
+
+These values are estimates read from the displayed waveform, not extracted from a simulator data file. The waveform is useful for checking the sequence and clock timing, but it does not by itself provide the numerical data needed for propagation delay, Elmore delay, parasitic RC, or average power.
+
+### Timing values that still require simulation data
+
+| Metric | Current status | Required measurement |
+|---|---|---|
+| tPHL | Not determined | Input and output 50% crossing times for a falling output transition |
+| tPLH | Not determined | Input and output 50% crossing times for a rising output transition |
+| Average propagation delay | Not determined | (tPHL + tPLH) / 2 |
+| Clock-to-Q delay | Not determined | Active clock edge to corresponding Q output 50% crossing |
+| Setup time | Not determined | Data transition relative to the active clock edge |
+| Critical-path delay | Not determined | Timing analysis of the identified register-to-register path |
+| Average power | Not determined | Time-averaged supply voltage × supply current over a stated interval |
+| Extracted R and C | Not determined | Post-layout parasitic extraction report |
+| Elmore delay | Not determined | Extracted RC tree values and source/destination nodes |
+
+**Important:** Do not use the 10 ns clock period as the propagation delay. It is the clock period, not the delay through the XOR gate or a flip-flop. Likewise, output edge positions in this plotted image are not precise enough to establish tPHL or tPLH without the underlying transient data and defined input/output threshold crossings.
+
+### Data needed to complete the numerical results
+
+1. Transient simulation data containing CLK, relevant XOR input/output nodes, Q outputs, and supply current (for example, a CSV export).
+2. Supply voltage and the exact time interval used for average-power measurement.
+3. Post-layout RC extraction output (DSPF, SPEF, or an extraction report containing the resistor-capacitor network).
+4. The relevant schematic/netlist or identified start and end nodes for each timing path.
+
+Until those data are available, the remaining values are intentionally reported as **Not determined** rather than estimated or fabricated.
