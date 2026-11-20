@@ -370,3 +370,117 @@ These values are estimates read from the displayed waveform, not extracted from 
 4. The relevant schematic/netlist or identified start and end nodes for each timing path.
 
 Until those data are available, the remaining values are intentionally reported as **Not determined** rather than estimated or fabricated.
+
+## Illustrative numerical example (assumed values — not measured results)
+
+The following example uses **assumed demonstration values** to show how the calculations are performed. These are not measurements from the supplied waveform, Cadence simulation, or physical-layout extraction. Replace them with actual simulation and Quantus/QRC results before presenting them as project results.
+
+### A. Propagation delay example
+
+Assume representative 50% crossing measurements for a selected logic path:
+
+- Input rising crossing: 10.000 ns
+- Output falling crossing: 10.048 ns
+- Input falling crossing: 20.000 ns
+- Output rising crossing: 20.056 ns
+
+Therefore:
+
+```text
+tPHL = 10.048 ns - 10.000 ns = 0.048 ns = 48 ps
+tPLH = 20.056 ns - 20.000 ns = 0.056 ns = 56 ps
+tp(avg) = (48 ps + 56 ps) / 2 = 52 ps
+```
+
+| Timing parameter | Illustrative value |
+|---|---:|
+| tPHL | 48 ps |
+| tPLH | 56 ps |
+| Average propagation delay | 52 ps |
+
+These assumed crossing times are an arithmetic example only; they were not read from the supplied plot.
+
+### B. Average power example
+
+Assume a 1.2 V supply and an average supply current of 12 µA over the chosen switching interval:
+
+```text
+Pavg = VDD x Iavg
+     = 1.2 V x 12 µA
+     = 14.4 µW
+```
+
+| Power parameter | Illustrative value |
+|---|---:|
+| Supply voltage | 1.2 V (assumed) |
+| Average supply current | 12 µA (assumed) |
+| Average power | 14.4 µW (calculated from assumptions) |
+
+This is an example calculation, not measured LFSR power. Actual average power requires the supply-current waveform and the simulation interval.
+
+### C. RC parasitic example
+
+Assume a simple two-section interconnect RC tree with the following hypothetical values:
+
+- R1 = 1.0 kΩ
+- R2 = 0.5 kΩ
+- C1 = 2.0 fF
+- C2 = 1.5 fF
+
+Assume the capacitance totals are Cground = 3.0 fF and Ccoupling = 1.5 fF:
+
+```text
+Ctotal = Cground + Ccoupling
+       = 3.0 fF + 1.5 fF
+       = 4.5 fF
+
+Rtotal (series example) = R1 + R2
+                        = 1.5 kΩ
+```
+
+| RC parameter | Illustrative value |
+|---|---:|
+| R1 | 1.0 kΩ |
+| R2 | 0.5 kΩ |
+| Total series resistance | 1.5 kΩ |
+| Ground capacitance | 3.0 fF |
+| Coupling capacitance | 1.5 fF |
+| Total capacitance | 4.5 fF |
+
+These assumed R and C values are not extracted from the layout. Actual extracted values depend on the PDK, metal layers, geometry, spacing, extraction corner, and coupling settings.
+
+### D. Elmore delay for the illustrative RC tree
+
+For the assumed two-section ladder:
+
+```text
+tElmore = R1(C1 + C2) + R2(C2)
+        = 1,000 x 3.5 fF + 500 x 1.5 fF
+        = 3.5 ps + 0.75 ps
+        = 4.25 ps
+
+Approximate t50 = 0.69 x 4.25 ps
+                = 2.93 ps
+```
+
+| Elmore parameter | Illustrative value |
+|---|---:|
+| Elmore delay | 4.25 ps |
+| Approximate 50% delay (0.69 × Elmore) | 2.93 ps |
+
+The RC example is a simplified assumed network and is not a substitute for Elmore calculation using the actual extracted RC tree.
+
+### E. Summary of assumed example values
+
+| Metric | Illustrative example | Data status |
+|---|---:|---|
+| tPHL | 48 ps | Assumed |
+| tPLH | 56 ps | Assumed |
+| Average propagation delay | 52 ps | Calculated from assumed delays |
+| Average power | 14.4 µW | Calculated from assumed VDD and current |
+| Total interconnect resistance | 1.5 kΩ | Assumed |
+| Total parasitic capacitance | 4.5 fF | Assumed |
+| Elmore delay | 4.25 ps | Calculated from assumed RC tree |
+| Approximate 50% RC delay | 2.93 ps | Calculated approximation |
+
+**Reporting note:** Keep this illustrative example separate from measured results. Do not describe these numbers as simulated, measured, or extracted. To publish actual performance results, replace every assumed input with values exported from Cadence transient simulation and post-layout parasitic extraction.
