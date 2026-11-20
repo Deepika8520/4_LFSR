@@ -1,4 +1,3 @@
-
 # 4-Bit Linear Feedback Shift Register (LFSR) Design
 
 ## Project Overview
@@ -7,16 +6,16 @@ This project focuses on the design and implementation of a **4-Bit Linear Feedba
 
 An LFSR is a sequential digital circuit that generates pseudo-random binary sequences using shift registers and XOR-based feedback logic.
 
-The design consists of four D Flip-Flops and XOR feedback logic to generate the next-state input and shift the stored data on every active clock edge.
+The design consists of four D Flip-Flops and XOR-based feedback logic to generate the next-state input and shift the stored data on every active clock edge.
 
 ## Objectives
 
-- To understand the working principle of a Linear Feedback Shift Register.
-- To design a 4-bit shift register using D Flip-Flops.
-- To implement XOR-based feedback logic.
-- To design and implement the circuit schematic.
-- To perform circuit simulation and verify output waveforms.
-- To design the physical layout of the circuit.
+- Understand the working principle of a Linear Feedback Shift Register.
+- Design a 4-bit shift register using D Flip-Flops.
+- Implement XOR-based feedback logic.
+- Design and implement the circuit schematic and physical layout.
+- Verify functionality using simulation waveforms.
+- Evaluate timing, power and interconnect parasitics.
 
 ## Circuit Architecture
 
@@ -67,7 +66,8 @@ The project includes the following circuit designs:
 ![D Flip-Flop Schematic](D_schematic.jpeg)
 
 ![D Flip-Flop Testbench](D_ff_tb.jpeg)
-### 4. 4-Bit LFSR 
+
+### 4. 4-Bit LFSR
 
 ![4-Bit LFSR](4_LFSR.jpeg)
 
@@ -79,6 +79,214 @@ The project includes the following circuit designs:
 
 ![Simulation Waveform](waveform.jpeg)
 
+---
+
+# Timing Analysis
+
+Timing analysis is used to evaluate how quickly the LFSR responds to input and clock transitions. Measure delays from transient simulation waveforms using consistent input/output threshold levels, normally 50% of the corresponding signal swing.
+
+## Propagation Delay (tPHL and tPLH)
+
+- **tPHL (high-to-low propagation delay):** Time between the input transition crossing its 50% point and the output transition crossing its 50% point when the output changes from HIGH to LOW.
+- **tPLH (low-to-high propagation delay):** Time between the input transition crossing its 50% point and the output transition crossing its 50% point when the output changes from LOW to HIGH.
+
+For a measured input/output pair:
+
+```text
+tPHL = t(output falling at 50%) - t(input triggering at 50%)
+tPLH = t(output rising at 50%)  - t(input triggering at 50%)
+```
+
+Average propagation delay:
+
+```text
+tp(avg) = (tPHL + tPLH) / 2
+```
+
+For a sequential LFSR, characterize the relevant combinational paths (for example, XOR input-to-output and register-to-register paths) separately. For a register-to-register path, also account for clock-to-Q, setup time and interconnect delay. Do not treat the clock-to-Q delay as an ordinary combinational input-to-output delay.
+
+| Timing parameter | Measured value |
+|---|---:|
+| tPHL | To be measured (ps) |
+| tPLH | To be measured (ps) |
+| Average propagation delay | To be calculated (ps) |
+| Clock-to-Q delay | To be measured (ps) |
+| Setup time | To be measured (ps) |
+| Critical path delay | To be measured (ps) |
+
+## RC Parasitic Extraction
+
+Parasitic extraction estimates the resistance and capacitance of layout interconnects. Extracted parasitics affect signal delay, transition time, power and signal integrity.
+
+### Interconnect resistance
+
+For a uniform rectangular metal wire:
+
+```text
+R = rho x L / (W x T)
+```
+
+Where:
+- rho = metal resistivity (ohm-meter)
+- L = wire length (meter)
+- W = wire width (meter)
+- T = metal thickness (meter)
+
+### Capacitance
+
+A simplified parallel-plate estimate is:
+
+```text
+C = epsilon0 x epsilonr x A / d
+```
+
+The actual interconnect capacitance includes ground and coupling components:
+
+```text
+Ctotal = Cground + Ccoupling
+```
+
+The equations above are first-order estimates only. For sign-off-quality values, use the process technology files and the foundry-qualified extraction tool; do not estimate actual parasitics from layout screenshots alone.
+
+### Cadence extraction procedure
+
+1. Complete and save the layout.
+2. Run DRC and resolve all design-rule violations.
+3. Run LVS and confirm that the layout matches the schematic.
+4. Open the supported Quantus/QRC extraction flow for the PDK.
+5. Select the correct technology file, extraction corner and RC options.
+6. Run extraction and generate the parasitic view or DSPF/SPEF output supported by the simulation flow.
+7. Configure post-layout simulation to use the extracted parasitics.
+8. Compare pre-layout and post-layout delay and power results.
+
+| Extracted parameter | Value |
+|---|---:|
+| Total interconnect resistance | To be filled from extraction report (ohm) |
+| Ground capacitance | To be filled from extraction report (F) |
+| Coupling capacitance | To be filled from extraction report (F) |
+| Total parasitic capacitance | To be calculated/reported (F) |
+| Extraction corner | To be specified |
+
+## Elmore Delay
+
+Elmore delay is a first-order delay estimate for an RC tree. For each resistor in the path from the source to the observation node, multiply that resistance by the total capacitance downstream of that resistor, then sum the products.
+
+```text
+tElmore = sum(Ri x Cdownstream,i)
+```
+
+For a two-section RC ladder:
+
+```text
+tElmore = R1(C1 + C2) + R2(C2)
+```
+
+The approximate 50%-level delay of a simple dominant-pole response is:
+
+```text
+t50 approximately 0.69 x tElmore
+```
+
+This 0.69 factor is an approximation, not a universal conversion for every RC network. Use the extracted RC topology and identify the actual source and destination nodes before calculating delay.
+
+| Elmore calculation item | Value |
+|---|---:|
+| R1, R2, ... | From extracted RC network |
+| C1, C2, ... | From extracted RC network |
+| Elmore delay | To be calculated (s) |
+| Approximate 50% delay, if applicable | To be calculated (s) |
+
+## Power Analysis
+
+Power is evaluated using supply voltage and current measured in simulation. Report the operating conditions (VDD, clock frequency, input activity, process/voltage/temperature corner and simulation interval) with every result.
+
+### Dynamic power
+
+Dynamic power is consumed when circuit capacitances charge and discharge during switching.
+
+```text
+Pdynamic = alpha x Csw x VDD^2 x f
+```
+
+Where:
+- alpha = switching activity factor (define whether it counts transitions or charging events)
+- Csw = effective switched capacitance (F)
+- VDD = supply voltage (V)
+- f = switching frequency (Hz)
+
+For measured average supply current, the average power drawn from the supply is:
+
+```text
+Pavg = VDD x Iavg
+```
+
+For time-varying supply current over a simulation interval:
+
+```text
+Pavg = (1 / T) x integral from 0 to T of [VDD(t) x I(VDD,t)] dt
+```
+
+Use the simulator's current sign convention consistently; report power delivered by the supply as a positive consumption value.
+
+### Static and leakage power
+
+Static/leakage power is measured when the circuit is not switching and is in a stable logic state:
+
+```text
+Pleak = VDD x Ileak
+```
+
+For multiple supply rails:
+
+```text
+Pleak,total = sum(VDDk x Ileak,k)
+```
+
+Measure leakage for representative stable states because leakage can depend on the stored state and input conditions. Do not use a switching-period average current as leakage current.
+
+### Average power
+
+Average power over a defined simulation window is:
+
+```text
+Pavg = (1 / T) x integral from 0 to T of Psupply(t) dt
+```
+
+If dynamic and leakage components are separated consistently:
+
+```text
+Pavg approximately Pdynamic,avg + Pleak,avg
+```
+
+Avoid double counting: if Pavg is obtained directly from the total supply current during switching, it already includes both switching and leakage contributions. Do not add leakage again to that measured total.
+
+| Power parameter | Measured value |
+|---|---:|
+| Supply voltage (VDD) | To be specified (V) |
+| Clock frequency | To be specified (Hz) |
+| Dynamic power | To be measured/calculated (W) |
+| Static leakage current | To be measured (A) |
+| Static leakage power | To be calculated (W) |
+| Average supply current | To be measured (A) |
+| Average power | To be measured/calculated (W) |
+
+## Results Summary
+
+Populate this table with values from schematic-level and extracted post-layout simulations. Keep units and simulation conditions consistent.
+
+| Metric | Pre-layout | Post-layout |
+|---|---:|---:|
+| tPHL (ps) | TBD | TBD |
+| tPLH (ps) | TBD | TBD |
+| Average propagation delay (ps) | TBD | TBD |
+| RC parasitics | N/A | From extraction |
+| Elmore delay (ps) | Estimate, if available | From extracted RC |
+| Dynamic power (W) | TBD | TBD |
+| Static leakage power (W) | TBD | TBD |
+| Average power (W) | TBD | TBD |
+
+**Note:** TBD values are intentionally left blank until actual Cadence simulation and extraction reports are available. No measured performance values are claimed in this repository documentation.
+
 ## Tools and Technologies
 
 - Cadence Virtuoso
@@ -88,7 +296,9 @@ The project includes the following circuit designs:
 - XOR Logic
 - Schematic Design
 - Physical Layout Design
-- Circuit Simulation
+- Transient Simulation
+- DRC and LVS
+- Quantus/QRC parasitic extraction (if available in the installed flow)
 
 ## Applications
 
@@ -101,9 +311,7 @@ The project includes the following circuit designs:
 
 ## Conclusion
 
-The 4-Bit LFSR project demonstrates the design and implementation of a sequential digital circuit using D Flip-Flops and XOR feedback logic.
-
-Through this project, I gained practical knowledge of sequential circuit design, transistor-level schematic implementation, physical layout design and simulation waveform analysis.
+The 4-Bit LFSR project demonstrates the design and implementation of a sequential digital circuit using D Flip-Flops and XOR feedback logic. Timing analysis using tPHL and tPLH, RC parasitic extraction, Elmore delay estimation and power analysis provide a more complete view of circuit performance. Final numerical results must be populated from the actual Cadence simulations and extracted layout data.
 
 ## Author
 
@@ -116,4 +324,3 @@ GitHub: [Deepika8520](https://github.com/Deepika8520)
 ## Project Repository
 
 [4-Bit LFSR – GitHub Repository](https://github.com/Deepika8520/4_LFSR)
-
