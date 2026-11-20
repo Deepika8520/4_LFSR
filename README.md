@@ -105,14 +105,21 @@ tp(avg) = (tPHL + tPLH) / 2
 
 For a sequential LFSR, characterize the relevant combinational paths (for example, XOR input-to-output and register-to-register paths) separately. For a register-to-register path, also account for clock-to-Q, setup time and interconnect delay. Do not treat the clock-to-Q delay as an ordinary combinational input-to-output delay.
 
-| Timing parameter | Measured value |
+| Timing parameter | Value from supplied waveform |
 |---|---:|
-| tPHL | To be measured (ps) |
-| tPLH | To be measured (ps) |
-| Average propagation delay | To be calculated (ps) |
-| Clock-to-Q delay | To be measured (ps) |
-| Setup time | To be measured (ps) |
-| Critical path delay | To be measured (ps) |
+| tPHL | Not measurable from the plotted waveform |
+| tPLH | Not measurable from the plotted waveform |
+| Average propagation delay | Cannot be calculated without tPHL and tPLH |
+| Clock-to-Q delay | Not numerically resolvable from the plotted waveform |
+| Setup time | Not measurable; D-input timing is not shown |
+| Critical path delay | Not determinable from the plotted waveform |
+| Clock period | Approximately 10 ns |
+| Clock frequency | Approximately 100 MHz |
+| Clock high time | Approximately 5 ns |
+| Clock low time | Approximately 5 ns |
+| Clock duty cycle | Approximately 50% |
+
+**Interpretation of the supplied transient plot:** The clock waveform shows an approximately 10 ns period (100 MHz), with approximately 5 ns high and 5 ns low intervals (50% duty cycle). The displayed plot does not provide sufficiently precise 50% input/output crossing timestamps to calculate tPHL or tPLH. It also does not show the D-input waveform needed for setup-time measurement or the internal path/parasitic data needed for critical-path delay. Therefore, those values are explicitly left unreported rather than guessed.
 
 ## RC Parasitic Extraction
 
