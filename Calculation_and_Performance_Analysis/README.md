@@ -54,8 +54,8 @@ The following values are read from the time axis and clock waveform in the suppl
 | Simulation start time | (t_{start}) | 0 ns | Graph origin |
 | Simulation stop time | (t_{stop}) | 150 ns | Graph end |
 | Observation interval | (T_{obs}) | 150 ns | (150 - 0) ns |
-| Clock period | (T_{clk}) | **10 ns** | Rising edge to next rising edge |
-| Clock frequency | (f_{clk}) | **100 MHz** | (1/(10\,ns)) |
+| Clock period | `Tclk` | **10 ns** | Rising edge to next rising edge |
+| Clock frequency | `fclk` | **100 MHz** | (1/(10\,ns)) |
 | Clock HIGH time | (T_H) | **5 ns** | Read from CLK high interval |
 | Clock LOW time | (T_L) | **5 ns** | Read from CLK low interval |
 | Clock duty cycle | (D) | **50%** | ((5/10)\times100) |
@@ -63,20 +63,22 @@ The following values are read from the time axis and clock waveform in the suppl
 
 ### Clock frequency calculation
 
-[
+
+$$
 f_{clk}=\frac{1}{T_{clk}}
 =\frac{1}{10\times10^{-9}}
 =100\times10^6\;Hz
 =\boxed{100\;MHz}
-]
+$$
 
 ### Duty-cycle calculation
 
-[
+
+$$
 D=\frac{T_H}{T_{clk}}\times100
 =\frac{5}{10}\times100
 =\boxed{50\%}
-]
+$$
 
 ### Clock waveform interpretation
 
@@ -89,61 +91,75 @@ D=\frac{T_H}{T_{clk}}\times100
 
 ---
 
-## ⏱️ Timing Performance Breakdown ((t_{PLH}), (t_{PHL}), (t_{pd}))
+## ⏱️ Timing Performance Breakdown — TPHL, TPLH and Average Propagation Delay
 
-Propagation delay is measured between the 50% voltage crossings of the triggering input and the responding output.
+<badge color="warning">Estimated values — not measured from raw simulator data</badge>
 
-For a measured voltage swing from (V_{OL}) to (V_{OH}):
+The supplied waveform screenshot shows the XOR output and CLK, but it does not show the XOR input waveforms. Therefore, the screenshot alone cannot provide exact input-to-output propagation delay. For a complete illustrative performance table, the following assumed CMOS XOR delay values are used consistently throughout this report:
 
-[
+| Propagation-delay parameter | Symbol | Value used |
+|---|---|---:|
+| Low-to-high propagation delay | `tPLH` | **55 ps** |
+| High-to-low propagation delay | `tPHL` | **45 ps** |
+| Average propagation delay | `tp(avg)` | **50 ps** |
+
+### 1. TPLH calculation (output LOW-to-HIGH)
+
+```text
+tPLH = t(output rising at 50%) - t(input triggering at 50%)
+
+Assumed tPLH = 55 ps
+```
+
+### 2. TPHL calculation (output HIGH-to-LOW)
+
+```text
+tPHL = t(output falling at 50%) - t(input triggering at 50%)
+
+Assumed tPHL = 45 ps
+```
+
+### 3. Average propagation-delay calculation
+
+$$
+t_{p(avg)} = \frac{t_{PLH}+t_{PHL}}{2}
+$$
+
+$$
+t_{p(avg)} = \frac{55\;ps+45\;ps}{2}
+= \boxed{50\;ps}
+$$
+
+### 4. 50% voltage threshold
+
+For a signal with measured LOW and HIGH levels:
+
+$$
 V_{50\%}=V_{OL}+0.5(V_{OH}-V_{OL})
-]
+$$
 
-### Timing equations
+The propagation delay is the time difference between the triggering input's 50% crossing and the output's corresponding 50% crossing.
 
-**Low-to-high propagation delay:**
+### 5. Timing result table
 
-[
-t_{PLH}=t_{output,rise(50\%)}-t_{input(50\%)}
-]
-
-**High-to-low propagation delay:**
-
-[
-t_{PHL}=t_{output,fall(50\%)}-t_{input(50\%)}
-]
-
-**Average propagation delay:**
-
-[
-t_{pd(avg)}=\frac{t_{PLH}+t_{PHL}}{2}
-]
-
-### Timing results supported by the supplied graph
-
-| Timing parameter | Result from supplied waveform | Measurement status |
+| Timing parameter | Value | Classification |
 |---|---:|---|
-| (t_{PLH}) of XOR gate | Not numerically determined | XOR input waveform is not displayed |
-| (t_{PHL}) of XOR gate | Not numerically determined | XOR input waveform is not displayed |
-| Average XOR propagation delay | Not numerically determined | Requires measured (t_{PLH}) and (t_{PHL}) |
-| Clock-to-Q0 delay | Not precisely resolved | Requires precise 50% edge measurements |
-| Clock-to-Q1 delay | Not precisely resolved | Requires precise 50% edge measurements |
-| Clock-to-Q2 delay | Not precisely resolved | Requires precise 50% edge measurements |
-| Clock-to-Q3 delay | Not precisely resolved | Requires precise 50% edge measurements |
-| Clock period | **10 ns (approx.)** | Read from graph |
-| Clock frequency | **100 MHz (approx.)** | Calculated from period |
+| XOR `tPLH` | **55 ps** | Assumed engineering estimate |
+| XOR `tPHL` | **45 ps** | Assumed engineering estimate |
+| Average XOR propagation delay | **50 ps** | Calculated from assumed TPLH and TPHL |
+| Clock-to-Q delay | 60 ps | Assumed estimate |
+| Clock period | 10 ns | Approx. waveform-derived |
+| Clock frequency | 100 MHz | Calculated from waveform |
 
-**Important measurement limitation:** The screenshot displays the XOR output but not both XOR input signals. Therefore, XOR (t_{PLH}) and (t_{PHL}) cannot be calculated from this image. The clock period is not propagation delay. The visually aligned clock and output edges do not establish zero clock-to-Q delay.
+**Important:** Do not confuse clock period (10 ns) with propagation delay (ps). The 55 ps and 45 ps values are illustrative estimates selected for this report; they are not measured from the screenshot. To obtain actual TPLH/TPHL, the XOR input waveforms and precise 50% crossing timestamps are required.
 
-### Cadence measurement procedure
+### Cadence measurement method
 
-1. Open the transient simulation in Cadence ViVA.
-2. Display the XOR input signals, XOR output and the clock.
-3. Set the threshold to 50% of the measured voltage swing.
-4. Measure the input and output crossing times for each transition.
-5. Calculate (t_{PLH}) and (t_{PHL}) separately.
-6. Repeat for Q0–Q3 to obtain clock-to-Q delay.
-7. Record the minimum, maximum and average values across valid transitions.
+1. Display the XOR input(s) and XOR output in Cadence ViVA.
+2. Determine the 50% voltage threshold for each signal.
+3. Measure the triggering input crossing and corresponding output crossing.
+4. For a rising output, calculate TPLH; for a falling output, calculate TPHL.
+5. Average the measured values using the equation above.
 
 ---
 
@@ -153,14 +169,14 @@ For a sequential circuit, the register timing parameters are important for relia
 
 | Timing parameter | Symbol | Result from supplied graph | Required measurement |
 |---|---|---|---|
-| Clock-to-Q delay | (t_{CQ}) | Not precisely determined | Clock and Q 50% crossings |
-| Setup time | (t_{setup}) | Not available | D-input stability before active clock edge |
-| Hold time | (t_{hold}) | Not available | D-input stability after active clock edge |
+| Clock-to-Q delay | `tCQ` | Not precisely determined | Clock and Q 50% crossings |
+| Setup time | `tsetup` | Not available | D-input stability before active clock edge |
+| Hold time | `thold` | Not available | D-input stability after active clock edge |
 | Clock skew | (t_{skew}) | Not available | Clock arrival at multiple register locations |
 | Clock rise time | (t_r) | Not measured | 10%–90% clock transition |
 | Clock fall time | (t_f) | Not measured | 90%–10% clock transition |
-| Clock period | (T_{clk}) | **10 ns (approx.)** | Clock waveform |
-| Clock frequency | (f_{clk}) | **100 MHz (approx.)** | (1/T_{clk}) |
+| Clock period | `Tclk` | **10 ns (approx.)** | Clock waveform |
+| Clock frequency | `fclk` | **100 MHz (approx.)** | (1/T_{clk}) |
 
 The displayed waveform does not include the internal D-input waveforms or multiple clock locations. Therefore, setup time, hold time and clock skew must not be assigned numerical values from this plot.
 
@@ -174,9 +190,10 @@ Post-layout interconnect parasitics influence propagation delay and power. Actua
 
 For a uniform rectangular interconnect:
 
-[
+
+$$
 R=\rho\frac{L}{W\times T}
-]
+$$
 
 Where:
 
@@ -187,15 +204,17 @@ Where:
 
 Approximate parallel-plate capacitance:
 
-[
+
+$$
 C=\epsilon_0\epsilon_r\frac{A}{d}
-]
+$$
 
 Total parasitic capacitance:
 
-[
+
+$$
 C_{total}=C_{ground}+C_{coupling}
-]
+$$
 
 ### RC performance table
 
@@ -212,21 +231,24 @@ C_{total}=C_{ground}+C_{coupling}
 
 For an RC tree:
 
-[
+
+$$
 t_{Elmore}=\sum_i R_i C_{downstream,i}
-]
+$$
 
 For a two-section RC ladder:
 
-[
+
+$$
 t_{Elmore}=R_1(C_1+C_2)+R_2C_2
-]
+$$
 
 For a simple dominant-pole approximation:
 
-[
+
+$$
 t_{50\%}\approx0.69\,t_{Elmore}
-]
+$$
 
 | Elmore parameter | Project result |
 |---|---:|
@@ -247,9 +269,10 @@ The supplied graph displays voltage signals only. It does not show the supply-cu
 
 Dynamic power is consumed when circuit capacitances charge and discharge during switching.
 
-[
+
+$$
 P_{dynamic}=\alpha C_{sw}V_{DD}^{2}f
-]
+$$
 
 Where:
 
@@ -272,9 +295,10 @@ The graph-based operating frequency is approximately 100 MHz. The other required
 
 Static power is the power consumed due to leakage current when the circuit is not switching.
 
-[
+
+$$
 P_{static}=V_{DD}\times I_{leakage}
-]
+$$
 
 | Static power parameter | Value |
 |---|---:|
@@ -286,15 +310,17 @@ P_{static}=V_{DD}\times I_{leakage}
 
 Average power is obtained by integrating instantaneous supply power over the selected measurement interval.
 
-[
+
+$$
 P_{avg}=\frac{1}{T}\int_0^T V_{DD}(t)I_{supply}(t)\,dt
-]
+$$
 
 For a constant supply voltage:
 
-[
+
+$$
 P_{avg}=V_{DD}\times I_{avg}
-]
+$$
 
 | Average power parameter | Value |
 |---|---:|
@@ -312,33 +338,37 @@ Power-delay product and energy-delay product are useful figures of merit for com
 
 ### 1. Power-delay product (PDP)
 
-[
+
+$$
 PDP=P_{avg}\times t_{pd}
-]
+$$
 
 Unit:
 
-[
+
+$$
 W\times s=J
-]
+$$
 
 ### 2. Energy-delay product (EDP)
 
-[
+
+$$
 EDP=PDP\times t_{pd}
 =P_{avg}\times t_{pd}^{2}
-]
+$$
 
 Unit:
 
-[
+
+$$
 J\times s
-]
+$$
 
 | Performance metric | Project result |
 |---|---:|
 | Average power (P_{avg}) | Requires supply-current data |
-| Average propagation delay (t_{pd}) | Requires 50% crossing measurements |
+| Average propagation delay `tpd` | Requires 50% crossing measurements |
 | Power-delay product (PDP) | Cannot yet be calculated |
 | Energy-delay product (EDP) | Cannot yet be calculated |
 
@@ -358,9 +388,9 @@ No numerical PDP or EDP is claimed because the required measured power and propa
 | 6 | Clock LOW time | **5 ns (approx.)** |
 | 7 | Duty cycle | **50% (approx.)** |
 | 8 | Visible clock cycles | **Approximately 15** |
-| 9 | XOR (t_{PLH}) | Requires XOR input waveform |
-| 10 | XOR (t_{PHL}) | Requires XOR input waveform |
-| 11 | Average propagation delay | Requires threshold measurements |
+| 9 | XOR TPLH | 55 ps (assumed estimate) |
+| 10 | XOR TPHL | 45 ps (assumed estimate) |
+| 11 | Average propagation delay | 50 ps (calculated estimate) |
 | 12 | Clock-to-Q delay | Requires precise threshold measurements |
 | 13 | Setup time | Requires D-input waveform |
 | 14 | Hold time | Requires D-input waveform |
@@ -429,8 +459,8 @@ This section is added to provide a complete numerical example for project presen
 | Clock HIGH / LOW | 5 ns / 5 ns | Read approximately from waveform |
 | Duty cycle | 50% | Calculated from graph |
 | Logic supply (V_{DD}) | 1.2 V | Approximate high-level plateau visual estimate; assumed nominal supply for calculations |
-| XOR (t_{PHL}) | 45 ps | Illustrative CMOS logic-path estimate |
-| XOR (t_{PLH}) | 55 ps | Illustrative CMOS logic-path estimate |
+| XOR `tPHL` | 45 ps | Illustrative CMOS logic-path estimate |
+| XOR `tPLH` | 55 ps | Illustrative CMOS logic-path estimate |
 | Effective path resistance (R_{eff}) | 2.0 kΩ | Assumed lumped value |
 | Effective path capacitance (C_{eff}) | 10 fF | Assumed lumped value |
 | Switching activity (alpha) | 0.25 | Assumed average activity factor |
@@ -454,13 +484,13 @@ tp(avg) = (tPHL + tPLH) / 2
 
 | Timing parameter | Engineering estimate | Status |
 |---|---:|---|
-| XOR (t_{PHL}) | 45 ps | Assumed estimate |
-| XOR (t_{PLH}) | 55 ps | Assumed estimate |
+| XOR `tPHL` | 45 ps | Assumed estimate |
+| XOR `tPLH` | 55 ps | Assumed estimate |
 | Average XOR propagation delay | 50 ps | Calculated from assumed delays |
 | Minimum/contamination delay (t_{cd}) | 30 ps | Assumed estimate; not measured |
-| Clock-to-Q delay (t_{CQ}) | 60 ps | Assumed estimate; not measured |
-| Setup time (t_{setup}) | 25 ps | Assumed estimate; not measured |
-| Hold time (t_{hold}) | 15 ps | Assumed estimate; not measured |
+| Clock-to-Q delay `tCQ` | 60 ps | Assumed estimate; not measured |
+| Setup time `tsetup` | 25 ps | Assumed estimate; not measured |
+| Hold time `thold` | 15 ps | Assumed estimate; not measured |
 | Clock skew | 5 ps | Assumed estimate; not measured |
 | Clock period | 10 ns | Approx. graph-derived |
 | Clock frequency | 100 MHz | Calculated from graph |
@@ -586,8 +616,8 @@ EDP = PDP x tpd
 | 3 | Clock HIGH time | 5 ns | Approx. waveform-derived |
 | 4 | Clock LOW time | 5 ns | Approx. waveform-derived |
 | 5 | Duty cycle | 50% | Calculated from waveform |
-| 6 | XOR (t_{PHL}) | 45 ps | Assumed estimate |
-| 7 | XOR (t_{PLH}) | 55 ps | Assumed estimate |
+| 6 | XOR `tPHL` | 45 ps | Assumed estimate |
+| 7 | XOR `tPLH` | 55 ps | Assumed estimate |
 | 8 | Average propagation delay | 50 ps | Calculated from assumed delays |
 | 9 | Contamination delay | 30 ps | Assumed estimate |
 | 10 | Clock-to-Q delay | 60 ps | Assumed estimate |
