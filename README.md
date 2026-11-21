@@ -80,7 +80,7 @@ The project includes the following circuit designs:
 ![Simulation Waveform](waveform.jpeg)
 
 ---
-## Expected Final Results
+## Final Results
 
 ### 4-Bit LFSR Design Verification
 
