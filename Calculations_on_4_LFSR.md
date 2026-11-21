@@ -484,7 +484,7 @@ EDP = PDP x tpd
 ### F. Consolidated project performance table
 
 | No. | Parameter | Value |
-|---:|---|---:|---|
+|---:|---|---:|
 | 1 | Clock period | 10 ns |
 | 2 | Clock frequency | 100 MHz |
 | 3 | Clock HIGH time | 5 ns |
