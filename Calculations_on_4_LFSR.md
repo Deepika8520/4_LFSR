@@ -500,3 +500,5 @@ EDP = PDP x tpd
 | 20 | Average power | 2.04 µW |
 | 21 | PDP | 0.102 fJ |
 | 22 | EDP | 5.10 fJ·ps |
+
+Final Result: The 4-bit LFSR design was analyzed successfully, and its timing, RC, Elmore delay, and power parameters were evaluated.
