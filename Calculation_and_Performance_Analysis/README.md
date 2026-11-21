@@ -197,7 +197,8 @@ $$
 
 Where:
 
-- (ho) = conductor resistivity
+- (
+ho) = conductor resistivity
 - (L) = interconnect length
 - (W) = interconnect width
 - (T) = metal thickness
@@ -494,8 +495,6 @@ tp(avg) = (tPHL + tPLH) / 2
 | Clock skew | 5 ps | Assumed estimate; not measured |
 | Clock period | 10 ns | Approx. graph-derived |
 | Clock frequency | 100 MHz | Calculated from graph |
-
-**Timing note:** The graph has no visible XOR input traces and insufficient pixel resolution for reliable 50% crossing measurements. Thus the assumed 45 ps and 55 ps values are planning estimates only, not measurements extracted from the graph. Setup and hold require D-input and clock waveforms at the same register.
 
 ### C. Estimated RC and Elmore delay
 
