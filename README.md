@@ -80,4 +80,47 @@ The project includes the following circuit designs:
 ![Simulation Waveform](waveform.jpeg)
 
 ---
+## Expected Final Results
 
+### 4-Bit LFSR Design Verification
+
+| S.No | Parameter | Expected Result |
+|---|---|---|
+| 1 | Design | 4-Bit Linear Feedback Shift Register |
+| 2 | Number of Flip-Flops | 4 |
+| 3 | Feedback Logic | XOR Gate |
+| 4 | Clock Signal | Applied |
+| 5 | Layout Design | Completed |
+| 6 | DRC Verification | PASS |
+| 7 | DRC Errors | 0 |
+| 8 | LVS Verification | PASS |
+| 9 | Netlist Comparison | Matched |
+| 10 | Final Status | Successful |
+
+### DRC Results
+
+- Design Rule Check (DRC) was performed on the 4-bit LFSR layout.
+- Metal width and spacing rules were checked.
+- Via and contact design rules were verified.
+- No DRC violations were observed.
+
+**DRC Status: PASS**
+
+### LVS Results
+
+- Layout Versus Schematic (LVS) verification was performed.
+- Extracted layout netlist was compared with the schematic netlist.
+- Device connectivity was verified.
+- The schematic and extracted netlists matched successfully.
+
+**LVS Status: PASS**
+
+### Final Outcome
+
+The 4-bit LFSR schematic and physical layout were successfully designed using Cadence Virtuoso.
+
+DRC verification confirmed that the layout satisfies the design rules, and LVS verification confirmed that the extracted layout netlist matches the reference schematic.
+
+The design verification was completed successfully.
+
+**Final Result: DRC PASS | LVS PASS**
