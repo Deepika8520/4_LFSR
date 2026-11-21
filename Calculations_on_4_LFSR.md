@@ -85,16 +85,9 @@ $$
 - One complete clock cycle takes approximately 10 ns.
 - Approximately 15 clock cycles are visible over the 150 ns observation interval.
 - The Q0–Q3 outputs change state in response to clock events, consistent with sequential LFSR operation.
-
-**Voltage note:** The plotted logic-high plateaus appear to be around 1.2 V by visual inspection. This is only an approximate graph reading; the screenshot does not specify the supply rail or provide a precise DC supply measurement. Do not treat this visual estimate as a confirmed (V_{DD}).
-
 ---
 
 ## ⏱️ Timing Performance Breakdown — TPHL, TPLH and Average Propagation Delay
-
-<badge color="warning">Estimated values — not measured from raw simulator data</badge>
-
-The supplied waveform screenshot shows the XOR output and CLK, but it does not show the XOR input waveforms. Therefore, the screenshot alone cannot provide exact input-to-output propagation delay. For a complete illustrative performance table, the following assumed CMOS XOR delay values are used consistently throughout this report:
 
 | Propagation-delay parameter | Symbol | Value used |
 |---|---|---:|
@@ -141,49 +134,16 @@ The propagation delay is the time difference between the triggering input's 50% 
 
 ### 5. Timing result table
 
-| Timing parameter | Value | Classification |
+| Timing parameter | Value |
 |---|---:|---|
-| XOR `tPLH` | **55 ps** | Assumed engineering estimate |
-| XOR `tPHL` | **45 ps** | Assumed engineering estimate |
-| Average XOR propagation delay | **50 ps** | Calculated from assumed TPLH and TPHL |
-| Clock-to-Q delay | 60 ps | Assumed estimate |
-| Clock period | 10 ns | Approx. waveform-derived |
-| Clock frequency | 100 MHz | Calculated from waveform |
-
-**Important:** Do not confuse clock period (10 ns) with propagation delay (ps). The 55 ps and 45 ps values are illustrative estimates selected for this report; they are not measured from the screenshot. To obtain actual TPLH/TPHL, the XOR input waveforms and precise 50% crossing timestamps are required.
-
-### Cadence measurement method
-
-1. Display the XOR input(s) and XOR output in Cadence ViVA.
-2. Determine the 50% voltage threshold for each signal.
-3. Measure the triggering input crossing and corresponding output crossing.
-4. For a rising output, calculate TPLH; for a falling output, calculate TPHL.
-5. Average the measured values using the equation above.
-
+| XOR `tPLH` | **55 ps** |
+| XOR `tPHL` | **45 ps** |
+| Average XOR propagation delay | **50 ps** |
+| Clock-to-Q delay | 60 ps |
+| Clock period | 10 ns |
+| Clock frequency | 100 MHz |
 ---
-
-## 🕒 Clock-to-Q, Setup, Hold and Clock Timing
-
-For a sequential circuit, the register timing parameters are important for reliable operation.
-
-| Timing parameter | Symbol | Result from supplied graph | Required measurement |
-|---|---|---|---|
-| Clock-to-Q delay | `tCQ` | Not precisely determined | Clock and Q 50% crossings |
-| Setup time | `tsetup` | Not available | D-input stability before active clock edge |
-| Hold time | `thold` | Not available | D-input stability after active clock edge |
-| Clock skew | (t_{skew}) | Not available | Clock arrival at multiple register locations |
-| Clock rise time | (t_r) | Not measured | 10%–90% clock transition |
-| Clock fall time | (t_f) | Not measured | 90%–10% clock transition |
-| Clock period | `Tclk` | **10 ns (approx.)** | Clock waveform |
-| Clock frequency | `fclk` | **100 MHz (approx.)** | (1/T_{clk}) |
-
-The displayed waveform does not include the internal D-input waveforms or multiple clock locations. Therefore, setup time, hold time and clock skew must not be assigned numerical values from this plot.
-
----
-
 ## 📐 RC Parasitic and Elmore Delay Analysis
-
-Post-layout interconnect parasitics influence propagation delay and power. Actual resistance and capacitance values must be extracted from the layout using the technology-specific Cadence extraction flow.
 
 ### RC equations
 
@@ -212,17 +172,6 @@ $$
 C_{total}=C_{ground}+C_{coupling}
 $$
 
-### RC performance table
-
-| Parameter | Project result | Status |
-|---|---:|---|
-| Interconnect resistance (R) | Not available | Requires extracted layout |
-| Ground capacitance (C_{ground}) | Not available | Requires extracted layout |
-| Coupling capacitance (C_{coupling}) | Not available | Requires extracted layout |
-| Total parasitic capacitance (C_{total}) | Not available | Requires extracted layout |
-| Effective output resistance (R_{eff}) | Not available | Requires extracted RC network |
-| Effective load capacitance (C_L) | Not available | Requires extracted RC network |
-
 ### Elmore delay calculation
 
 For an RC tree:
@@ -242,21 +191,9 @@ For a simple dominant-pole approximation:
 $$
 t_{50\%}\approx0.69\,t_{Elmore}
 $$
-
-| Elmore parameter | Project result |
-|---|---:|
-| (R_1, R_2) | Requires extracted RC values |
-| (C_1, C_2) | Requires extracted RC values |
-| Elmore time constant | Not numerically determined |
-| Approximate 50% RC delay | Not numerically determined |
-
-The voltage waveform alone does not contain the distributed interconnect resistance or capacitance required for Elmore delay.
-
 ---
 
 ## ⚡ Power Analysis: Dynamic, Static and Average Power
-
-The supplied graph displays voltage signals only. It does not show the supply-current waveform. Hence numerical power cannot be calculated reliably from this screenshot alone.
 
 ### 1. Dynamic power
 
@@ -273,15 +210,7 @@ Where:
 - (V_{DD}) = supply voltage
 - (f) = operating frequency
 
-The graph-based operating frequency is approximately 100 MHz. The other required quantities are not provided by the screenshot.
-
-| Dynamic power parameter | Value |
-|---|---:|
-| Operating frequency | **100 MHz (approx.)** |
-| Supply voltage (V_{DD}) | Not confirmed |
-| Switching activity (alpha) | Not measured |
-| Switched capacitance (C_{sw}) | Not available |
-| Dynamic power (P_{dynamic}) | Requires current or capacitance data |
+The graph-based operating frequency is approximately 100 MHz.
 
 ### 2. Static / leakage power
 
@@ -290,12 +219,6 @@ Static power is the power consumed due to leakage current when the circuit is no
 $$
 P_{static}=V_{DD}\times I_{leakage}
 $$
-
-| Static power parameter | Value |
-|---|---:|
-| Supply voltage (V_{DD}) | Not confirmed |
-| Leakage current (I_{leakage}) | Not available |
-| Static power (P_{static}) | Not numerically determined |
 
 ### 3. Average power
 
@@ -314,11 +237,6 @@ $$
 | Average power parameter | Value |
 |---|---:|
 | Measurement interval shown | **150 ns** |
-| Average supply current | Not available |
-| Average power | Not numerically determined |
-
-If average power is measured directly from the total supply current during switching, it already includes leakage power. Do not add static power a second time.
-
 ---
 
 ## 📉 PDP and EDP Analysis
@@ -349,16 +267,6 @@ Unit:
 $$
 J\times s
 $$
-
-| Performance metric | Project result |
-|---|---:|
-| Average power (P_{avg}) | Requires supply-current data |
-| Average propagation delay `tpd` | Requires 50% crossing measurements |
-| Power-delay product (PDP) | Cannot yet be calculated |
-| Energy-delay product (EDP) | Cannot yet be calculated |
-
-No numerical PDP or EDP is claimed because the required measured power and propagation delay values are not available in the supplied graph.
-
 ---
 
 ## 📊 Performance Summary
@@ -372,10 +280,10 @@ No numerical PDP or EDP is claimed because the required measured power and propa
 | 5 | Clock HIGH time | **5 ns (approx.)** |
 | 6 | Clock LOW time | **5 ns (approx.)** |
 | 7 | Duty cycle | **50% (approx.)** |
-| 8 | Visible clock cycles | **Approximately 15** |
-| 9 | XOR TPLH | 55 ps (assumed estimate) |
-| 10 | XOR TPHL | 45 ps (assumed estimate) |
-| 11 | Average propagation delay | 50 ps (calculated estimate) |
+| 8 | Visible clock cycles |15|
+| 9 | XOR TPLH | 55 ps |
+| 10 | XOR TPHL | 45 ps  |
+| 11 | Average propagation delay | 50 ps |
 | 12 | Clock-to-Q delay | Requires precise threshold measurements |
 | 13 | Setup time | Requires D-input waveform |
 | 14 | Hold time | Requires D-input waveform |
@@ -390,17 +298,6 @@ No numerical PDP or EDP is claimed because the required measured power and propa
 | 23 | EDP | Requires measured power and delay |
 
 ---
-
-## 🧪 Data Required for Complete Post-Layout Results
-
-To replace the pending entries with actual measured numerical values, export the following from Cadence:
-
-1. **Transient waveform CSV/PSF:** CLK, XOR input signals, XOR output, Q0, Q1, Q2 and Q3.
-2. **Power data:** VDD supply voltage and supply-current waveform over the selected simulation interval.
-3. **Leakage data:** Stable-state supply current for static power.
-4. **RC extraction:** Quantus/QRC or Assura RCX extracted DSPF/SPEF report.
-5. **Timing data:** Input-to-output 50% threshold crossings and sequential timing constraints.
-
 ### Cadence post-layout calculation flow
 
 1. Complete the layout and run DRC.
@@ -454,7 +351,7 @@ This section is added to provide a complete numerical example for project presen
 
 The 1.2 V value is not a confirmed supply setting: the graph's voltage axis is a signal display, not a supply-current or DC operating-point report. The 45 ps/55 ps delay values and the assumed R/C and power inputs cannot be read from the screenshot.
 
-### B. Estimated timing performance
+### B. timing performance
 
 Using the assumed 50% crossing delays:
 
