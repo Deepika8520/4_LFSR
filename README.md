@@ -484,3 +484,60 @@ The RC example is a simplified assumed network and is not a substitute for Elmor
 | Approximate 50% RC delay | 2.93 ps | Calculated approximation |
 
 **Reporting note:** Keep this illustrative example separate from measured results. Do not describe these numbers as simulated, measured, or extracted. To publish actual performance results, replace every assumed input with values exported from Cadence transient simulation and post-layout parasitic extraction.
+
+
+## Re-analysis of the supplied transient waveform (21-Nov-2026)
+
+The latest supplied image displays `/Xor`, `/CLK`, and the four outputs `/Q0` to `/Q3` over approximately 0–150 ns. The following values are read from the plotted time axis:
+
+| Parameter | Waveform-based result |
+|---|---:|
+| Displayed time interval | Approximately 0–150 ns |
+| Clock period | Approximately 10 ns |
+| Clock frequency | Approximately 100 MHz |
+| Clock HIGH time | Approximately 5 ns |
+| Clock LOW time | Approximately 5 ns |
+| Clock duty cycle | Approximately 50% |
+
+### Propagation delay interpretation
+
+The Q-output transitions appear aligned with active clock edges in the rendered plot. The plot spans about 150 ns across roughly 1,387 horizontal pixels, corresponding to approximately 0.108 ns per pixel. Therefore, this image does not have enough horizontal resolution to read reliable 50%-threshold crossing times for clock-to-Q delay. It also does not provide the detailed XOR input and output crossing timestamps needed to calculate XOR `tPHL` and `tPLH`.
+
+| Timing metric | Result from this image |
+|---|---|
+| XOR `tPHL` | Not numerically resolvable |
+| XOR `tPLH` | Not numerically resolvable |
+| Average XOR propagation delay | Not calculable without the two measured delays |
+| Clock-to-Q delay | Transitions appear aligned within plot resolution; exact value not resolvable |
+| Register setup time | Not measurable; D-input-to-clock timing is not provided |
+| Clock period | Approximately 10 ns (measured from plot) |
+
+**Important distinction:** The 10 ns clock period is not propagation delay. The apparent alignment of clock and Q transitions must not be reported as zero delay. Accurate delay values require the simulator's transient data (CSV/PSF) and 50% crossing measurements.
+
+### Dynamic, static and average power
+
+The supplied image contains logic voltage waveforms only. It does not show supply current, supply power, effective switched capacitance, or a leakage-current measurement. Consequently, no defensible numerical power value can be extracted from this image.
+
+| Power metric | Result from this image | Data required for a numerical result |
+|---|---|---|
+| Dynamic power | Not calculable | VDD and effective switched capacitance/activity, or supply-current waveform during switching |
+| Static/leakage power | Not calculable | Stable-state leakage current and VDD |
+| Average power | Not calculable | Time-averaged supply voltage × supply current over a specified interval |
+
+Use the following measured-power relationships when the required simulation data are available:
+
+```text
+Pdynamic = alpha x Csw x VDD^2 x f
+Pstatic  = VDD x Ileak
+Paverage = (1/T) x integral[ VDD(t) x Isupply(t) ] dt
+```
+
+If average power is calculated directly from the total supply current during switching, it already includes leakage; do not add static power a second time.
+
+### Data needed to replace the unresolved values
+
+1. Export the transient simulation data (CSV/PSF) for CLK, XOR input/output, Q0–Q3, and the VDD supply current.
+2. Provide the supply voltage and specify the time window used for average-power calculation.
+3. For post-layout delay and Elmore delay, provide the Quantus/QRC DSPF/SPEF or extracted RC report.
+
+**Reporting status:** Only the clock period, frequency, high/low times and duty cycle above are numerical estimates supported by this screenshot. No numeric propagation-delay or power result is claimed from the screenshot alone. The illustrative examples elsewhere in this README remain assumed examples, not measured project results.
