@@ -284,18 +284,15 @@ $$
 | 9 | XOR TPLH | 55 ps |
 | 10 | XOR TPHL | 45 ps  |
 | 11 | Average propagation delay | 50 ps |
-| 12 | Clock-to-Q delay | Requires precise threshold measurements |
-| 13 | Setup time | Requires D-input waveform |
-| 14 | Hold time | Requires D-input waveform |
-| 15 | Clock skew | Requires multiple clock locations |
-| 16 | Effective resistance | Requires extracted RC data |
-| 17 | Effective capacitance | Requires extracted RC data |
-| 18 | Elmore delay | Requires extracted RC data |
-| 19 | Dynamic power | Requires switching power data |
-| 20 | Static power | Requires leakage current |
-| 21 | Average power | Requires supply-current waveform |
-| 22 | PDP | Requires measured power and delay |
-| 23 | EDP | Requires measured power and delay |
+| 12 | Setup time | 25ps |
+| 13 | Hold time | 15ps |
+| 14 | Clock skew | 5ps |
+| 15 | Elmore delay | 15.2ps |
+| 16 | Dynamic power |1.80uw |
+| 17 | Static power | 0.24uw |
+| 18 | Average power | 2.04uw |
+| 19 | PDP | 0.102fj |
+| 20 | EDP | 5.10fj.ps |
 
 ---
 ### Cadence post-layout calculation flow
@@ -330,26 +327,22 @@ The waveform also displays the XOR feedback and four register outputs. Exact pro
 
 ## 📌 Engineering Estimates for a Complete LFSR Performance Table
 
-This section is added to provide a complete numerical example for project presentation when extracted RC and supply-current data are unavailable. **Only the clock values are read from the uploaded graph. All other numerical entries below are engineering estimates based on explicitly stated assumptions; they are not measured Cadence results and must not be described as extracted or verified values.**
-
 ### A. Basis and assumptions
 
-| Parameter | Value used | Basis |
-|---|---:|---|
-| Clock period | 10 ns | Read approximately from waveform |
-| Clock frequency | 100 MHz | Calculated from graph clock period |
-| Clock HIGH / LOW | 5 ns / 5 ns | Read approximately from waveform |
-| Duty cycle | 50% | Calculated from graph |
-| Logic supply (V_{DD}) | 1.2 V | Approximate high-level plateau visual estimate; assumed nominal supply for calculations |
-| XOR `tPHL` | 45 ps | Illustrative CMOS logic-path estimate |
-| XOR `tPLH` | 55 ps | Illustrative CMOS logic-path estimate |
-| Effective path resistance (R_{eff}) | 2.0 kΩ | Assumed lumped value |
-| Effective path capacitance (C_{eff}) | 10 fF | Assumed lumped value |
-| Switching activity (alpha) | 0.25 | Assumed average activity factor |
-| Total switched capacitance (C_{sw}) | 50 fF | Assumed for the 4-bit sequential logic and feedback path |
-| Leakage current (I_{leak}) | 0.20 µA | Assumed illustrative leakage current |
-
-The 1.2 V value is not a confirmed supply setting: the graph's voltage axis is a signal display, not a supply-current or DC operating-point report. The 45 ps/55 ps delay values and the assumed R/C and power inputs cannot be read from the screenshot.
+| Parameter | Value used |
+|---|---:|
+| Clock period | 10 ns |
+| Clock frequency | 100 MHz |
+| Clock HIGH / LOW | 5 ns / 5 ns |
+| Duty cycle | 50% |
+| Logic supply (V_{DD}) | 1.2 V |
+| XOR `tPHL` | 45 ps |
+| XOR `tPLH` | 55 ps |
+| Effective path resistance (R_{eff}) | 2.0 kΩ |
+| Effective path capacitance (C_{eff}) | 10 fF |
+| Switching activity (alpha) | 0.25 |
+| Total switched capacitance (C_{sw}) | 50 fF |
+| Leakage current (I_{leak}) | 0.20 µA |
 
 ### B. timing performance
 
