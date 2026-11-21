@@ -412,3 +412,198 @@ The waveform also displays the XOR feedback and four register outputs. Exact pro
 **Repository:** [Deepika8520/4_LFSR](https://github.com/Deepika8520/4_LFSR)
 
 **Reference format:** [8-Bit Carry Look-Ahead Adder — Timing and Power Analysis](https://github.com/bollaraputhanisha-pixel/8-Bit-Carry-Look-Ahead-Adder-implementation-in-Cadence-90nm/blob/main/README.md#-16-bit-cla-extension)
+
+
+---
+
+## 📌 Engineering Estimates for a Complete LFSR Performance Table
+
+This section is added to provide a complete numerical example for project presentation when extracted RC and supply-current data are unavailable. **Only the clock values are read from the uploaded graph. All other numerical entries below are engineering estimates based on explicitly stated assumptions; they are not measured Cadence results and must not be described as extracted or verified values.**
+
+### A. Basis and assumptions
+
+| Parameter | Value used | Basis |
+|---|---:|---|
+| Clock period | 10 ns | Read approximately from waveform |
+| Clock frequency | 100 MHz | Calculated from graph clock period |
+| Clock HIGH / LOW | 5 ns / 5 ns | Read approximately from waveform |
+| Duty cycle | 50% | Calculated from graph |
+| Logic supply (V_{DD}) | 1.2 V | Approximate high-level plateau visual estimate; assumed nominal supply for calculations |
+| XOR (t_{PHL}) | 45 ps | Illustrative CMOS logic-path estimate |
+| XOR (t_{PLH}) | 55 ps | Illustrative CMOS logic-path estimate |
+| Effective path resistance (R_{eff}) | 2.0 kΩ | Assumed lumped value |
+| Effective path capacitance (C_{eff}) | 10 fF | Assumed lumped value |
+| Switching activity (alpha) | 0.25 | Assumed average activity factor |
+| Total switched capacitance (C_{sw}) | 50 fF | Assumed for the 4-bit sequential logic and feedback path |
+| Leakage current (I_{leak}) | 0.20 µA | Assumed illustrative leakage current |
+
+The 1.2 V value is not a confirmed supply setting: the graph's voltage axis is a signal display, not a supply-current or DC operating-point report. The 45 ps/55 ps delay values and the assumed R/C and power inputs cannot be read from the screenshot.
+
+### B. Estimated timing performance
+
+Using the assumed 50% crossing delays:
+
+```text
+tPHL = 45 ps
+tPLH = 55 ps
+
+tp(avg) = (tPHL + tPLH) / 2
+        = (45 + 55) / 2
+        = 50 ps
+```
+
+| Timing parameter | Engineering estimate | Status |
+|---|---:|---|
+| XOR (t_{PHL}) | 45 ps | Assumed estimate |
+| XOR (t_{PLH}) | 55 ps | Assumed estimate |
+| Average XOR propagation delay | 50 ps | Calculated from assumed delays |
+| Minimum/contamination delay (t_{cd}) | 30 ps | Assumed estimate; not measured |
+| Clock-to-Q delay (t_{CQ}) | 60 ps | Assumed estimate; not measured |
+| Setup time (t_{setup}) | 25 ps | Assumed estimate; not measured |
+| Hold time (t_{hold}) | 15 ps | Assumed estimate; not measured |
+| Clock skew | 5 ps | Assumed estimate; not measured |
+| Clock period | 10 ns | Approx. graph-derived |
+| Clock frequency | 100 MHz | Calculated from graph |
+
+**Timing note:** The graph has no visible XOR input traces and insufficient pixel resolution for reliable 50% crossing measurements. Thus the assumed 45 ps and 55 ps values are planning estimates only, not measurements extracted from the graph. Setup and hold require D-input and clock waveforms at the same register.
+
+### C. Estimated RC and Elmore delay
+
+Assume a simplified one-section lumped RC path:
+
+```text
+Reff = 2.0 kΩ
+Ceff = 10 fF
+
+tau = Reff x Ceff
+    = 2,000 x 10 x 10^-15
+    = 20 x 10^-12 s
+    = 20 ps
+
+Approximate 50% RC delay = 0.69 x tau
+                         = 0.69 x 20 ps
+                         = 13.8 ps
+```
+
+For a two-section illustrative RC tree, assume (R_1=1.2\,k\Omega), (R_2=0.8\,k\Omega), (C_1=6\,fF), and (C_2=4\,fF):
+
+```text
+tElmore = R1(C1 + C2) + R2(C2)
+        = 1,200 x 10 fF + 800 x 4 fF
+        = 12 ps + 3.2 ps
+        = 15.2 ps
+
+Approximate 50% Elmore delay = 0.69 x 15.2 ps
+                             = 10.49 ps
+```
+
+| RC parameter | Illustrative estimate | Status |
+|---|---:|---|
+| Effective resistance (R_{eff}) | 2.0 kΩ | Assumed |
+| Effective capacitance (C_{eff}) | 10 fF | Assumed |
+| Lumped RC time constant | 20 ps | Calculated from assumed R and C |
+| Approximate lumped 50% delay | 13.8 ps | Calculated approximation |
+| Two-section Elmore delay | 15.2 ps | Calculated from assumed RC tree |
+| Approximate two-section 50% delay | 10.49 ps | Calculated approximation |
+| Ground capacitance | 6 fF | Assumed example |
+| Coupling capacitance | 4 fF | Assumed example |
+| Total capacitance | 10 fF | Sum of assumed components |
+
+These are example network values only. The actual interconnect R/C values depend on the layout geometry, metal layers, PDK and extraction corner. The two RC examples are separate simplified models and should not be added together.
+
+### D. Estimated power analysis
+
+Use the assumed (V_{DD}=1.2\,V), (f=100\,MHz), (alpha=0.25), and (C_{sw}=50\,fF).
+
+**Dynamic power:**
+
+```text
+Pdynamic = alpha x Csw x VDD^2 x f
+         = 0.25 x 50 x 10^-15 x (1.2)^2 x 100 x 10^6
+         = 1.80 x 10^-6 W
+         = 1.80 µW
+```
+
+**Static/leakage power:**
+
+```text
+Pstatic = VDD x Ileak
+        = 1.2 x 0.20 x 10^-6
+        = 0.24 x 10^-6 W
+        = 0.24 µW
+```
+
+**Estimated average power:**
+
+```text
+Pavg ≈ Pdynamic + Pstatic
+     = 1.80 µW + 0.24 µW
+     = 2.04 µW
+```
+
+| Power parameter | Illustrative estimate | Basis |
+|---|---:|---|
+| Supply voltage | 1.2 V | Assumed from visual logic-high level |
+| Operating frequency | 100 MHz | Graph-derived |
+| Switching activity α | 0.25 | Assumed |
+| Switched capacitance | 50 fF | Assumed |
+| Dynamic power | 1.80 µW | Calculated from assumptions |
+| Leakage current | 0.20 µA | Assumed |
+| Static power | 0.24 µW | Calculated from assumptions |
+| Average power | 2.04 µW | Dynamic + static estimate |
+
+This average-power estimate assumes that the dynamic-power expression and leakage estimate refer to the same operating condition. A Cadence supply-current integration is required for an actual average-power result.
+
+### E. Estimated PDP and EDP
+
+Use (P_{avg}=2.04\,\mu W) and (t_{pd}=50\,ps) from the illustrative assumptions above.
+
+```text
+PDP = Pavg x tpd
+    = 2.04 x 10^-6 x 50 x 10^-12
+    = 1.02 x 10^-16 J
+    = 0.102 fJ
+
+EDP = PDP x tpd
+    = 1.02 x 10^-16 x 50 x 10^-12
+    = 5.10 x 10^-27 J.s
+    = 5.10 fJ.ps
+```
+
+| Figure of merit | Illustrative estimate |
+|---|---:|
+| Average power | 2.04 µW |
+| Average propagation delay | 50 ps |
+| PDP | 0.102 fJ |
+| EDP | 5.10 fJ·ps |
+
+### F. Consolidated project performance table
+
+| No. | Parameter | Value | Classification |
+|---:|---|---:|---|
+| 1 | Clock period | 10 ns | Approx. waveform-derived |
+| 2 | Clock frequency | 100 MHz | Calculated from waveform |
+| 3 | Clock HIGH time | 5 ns | Approx. waveform-derived |
+| 4 | Clock LOW time | 5 ns | Approx. waveform-derived |
+| 5 | Duty cycle | 50% | Calculated from waveform |
+| 6 | XOR (t_{PHL}) | 45 ps | Assumed estimate |
+| 7 | XOR (t_{PLH}) | 55 ps | Assumed estimate |
+| 8 | Average propagation delay | 50 ps | Calculated from assumed delays |
+| 9 | Contamination delay | 30 ps | Assumed estimate |
+| 10 | Clock-to-Q delay | 60 ps | Assumed estimate |
+| 11 | Setup time | 25 ps | Assumed estimate |
+| 12 | Hold time | 15 ps | Assumed estimate |
+| 13 | Clock skew | 5 ps | Assumed estimate |
+| 14 | Effective resistance | 2.0 kΩ | Assumed |
+| 15 | Effective capacitance | 10 fF | Assumed |
+| 16 | Lumped RC time constant | 20 ps | Calculated from assumed R/C |
+| 17 | Two-section Elmore delay | 15.2 ps | Calculated from assumed RC tree |
+| 18 | Dynamic power | 1.80 µW | Calculated from assumed inputs |
+| 19 | Static power | 0.24 µW | Calculated from assumed inputs |
+| 20 | Average power | 2.04 µW | Calculated estimate |
+| 21 | PDP | 0.102 fJ | Calculated estimate |
+| 22 | EDP | 5.10 fJ·ps | Calculated estimate |
+
+### Important reporting and viva note
+
+The clock timing values are approximate readings from the uploaded transient plot. The remaining numerical values in this section are **illustrative engineering estimates**, not values extracted from that plot. A voltage-only transient graph cannot determine current, leakage, capacitance, interconnect resistance, or exact threshold-crossing delay. Keep the classification column when using this table in a report or presentation. For sign-off or a claim of measured performance, replace assumed inputs with Cadence waveform measurements and extracted RC data.
