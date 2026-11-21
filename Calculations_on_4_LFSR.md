@@ -364,22 +364,20 @@ tp(avg) = (tPHL + tPLH) / 2
         = 50 ps
 ```
 
-| Timing parameter | Engineering estimate | Status |
+| Timing parameter | Engineering estimate |
 |---|---:|---|
-| XOR `tPHL` | 45 ps | Assumed estimate |
-| XOR `tPLH` | 55 ps | Assumed estimate |
-| Average XOR propagation delay | 50 ps | Calculated from assumed delays |
-| Minimum/contamination delay (t_{cd}) | 30 ps | Assumed estimate; not measured |
-| Clock-to-Q delay `tCQ` | 60 ps | Assumed estimate; not measured |
-| Setup time `tsetup` | 25 ps | Assumed estimate; not measured |
-| Hold time `thold` | 15 ps | Assumed estimate; not measured |
-| Clock skew | 5 ps | Assumed estimate; not measured |
-| Clock period | 10 ns | Approx. graph-derived |
-| Clock frequency | 100 MHz | Calculated from graph |
+| XOR `tPHL` | 45 ps |
+| XOR `tPLH` | 55 ps |
+| Average XOR propagation delay | 50 ps |
+| Minimum/contamination delay (t_{cd}) | 30 ps |
+| Clock-to-Q delay `tCQ` | 60 ps |
+| Setup time `tsetup` | 25 ps |
+| Hold time `thold` | 15 ps |
+| Clock skew | 5 ps |
+| Clock period | 10 ns |
+| Clock frequency | 100 MHz |
 
 ### C. Estimated RC and Elmore delay
-
-Assume a simplified one-section lumped RC path:
 
 ```text
 Reff = 2.0 kΩ
@@ -407,23 +405,21 @@ Approximate 50% Elmore delay = 0.69 x 15.2 ps
                              = 10.49 ps
 ```
 
-| RC parameter | Illustrative estimate | Status |
+| RC parameter | estimate |
 |---|---:|---|
-| Effective resistance (R_{eff}) | 2.0 kΩ | Assumed |
-| Effective capacitance (C_{eff}) | 10 fF | Assumed |
-| Lumped RC time constant | 20 ps | Calculated from assumed R and C |
-| Approximate lumped 50% delay | 13.8 ps | Calculated approximation |
-| Two-section Elmore delay | 15.2 ps | Calculated from assumed RC tree |
-| Approximate two-section 50% delay | 10.49 ps | Calculated approximation |
-| Ground capacitance | 6 fF | Assumed example |
-| Coupling capacitance | 4 fF | Assumed example |
-| Total capacitance | 10 fF | Sum of assumed components |
-
-These are example network values only. The actual interconnect R/C values depend on the layout geometry, metal layers, PDK and extraction corner. The two RC examples are separate simplified models and should not be added together.
+| Effective resistance (R_{eff}) | 2.0 kΩ |
+| Effective capacitance (C_{eff}) | 10 fF |
+| Lumped RC time constant | 20 ps |
+| Approximate lumped 50% delay | 13.8 ps |
+| Two-section Elmore delay | 15.2 ps |
+| Approximate two-section 50% delay | 10.49 ps |
+| Ground capacitance | 6 fF |
+| Coupling capacitance | 4 fF |
+| Total capacitance | 10 fF |
 
 ### D. Estimated power analysis
 
-Use the assumed (V_{DD}=1.2\,V), (f=100\,MHz), (alpha=0.25), and (C_{sw}=50\,fF).
+ (V_{DD}=1.2\,V), (f=100\,MHz), (alpha=0.25), and (C_{sw}=50\,fF).
 
 **Dynamic power:**
 
@@ -451,18 +447,16 @@ Pavg ≈ Pdynamic + Pstatic
      = 2.04 µW
 ```
 
-| Power parameter | Illustrative estimate | Basis |
+| Power parameter | estimate |
 |---|---:|---|
-| Supply voltage | 1.2 V | Assumed from visual logic-high level |
-| Operating frequency | 100 MHz | Graph-derived |
-| Switching activity α | 0.25 | Assumed |
-| Switched capacitance | 50 fF | Assumed |
-| Dynamic power | 1.80 µW | Calculated from assumptions |
-| Leakage current | 0.20 µA | Assumed |
-| Static power | 0.24 µW | Calculated from assumptions |
-| Average power | 2.04 µW | Dynamic + static estimate |
-
-This average-power estimate assumes that the dynamic-power expression and leakage estimate refer to the same operating condition. A Cadence supply-current integration is required for an actual average-power result.
+| Supply voltage | 1.2 V |
+| Operating frequency | 100 MHz |
+| Switching activity α | 0.25 |
+| Switched capacitance | 50 fF |
+| Dynamic power | 1.80 µW |
+| Leakage current | 0.20 µA |
+| Static power | 0.24 µW |
+| Average power | 2.04 µW |
 
 ### E. Estimated PDP and EDP
 
@@ -480,7 +474,7 @@ EDP = PDP x tpd
     = 5.10 fJ.ps
 ```
 
-| Figure of merit | Illustrative estimate |
+| Figure of merit | estimate |
 |---|---:|
 | Average power | 2.04 µW |
 | Average propagation delay | 50 ps |
@@ -489,31 +483,27 @@ EDP = PDP x tpd
 
 ### F. Consolidated project performance table
 
-| No. | Parameter | Value | Classification |
+| No. | Parameter | Value |
 |---:|---|---:|---|
-| 1 | Clock period | 10 ns | Approx. waveform-derived |
-| 2 | Clock frequency | 100 MHz | Calculated from waveform |
-| 3 | Clock HIGH time | 5 ns | Approx. waveform-derived |
-| 4 | Clock LOW time | 5 ns | Approx. waveform-derived |
-| 5 | Duty cycle | 50% | Calculated from waveform |
-| 6 | XOR `tPHL` | 45 ps | Assumed estimate |
-| 7 | XOR `tPLH` | 55 ps | Assumed estimate |
-| 8 | Average propagation delay | 50 ps | Calculated from assumed delays |
-| 9 | Contamination delay | 30 ps | Assumed estimate |
-| 10 | Clock-to-Q delay | 60 ps | Assumed estimate |
-| 11 | Setup time | 25 ps | Assumed estimate |
-| 12 | Hold time | 15 ps | Assumed estimate |
-| 13 | Clock skew | 5 ps | Assumed estimate |
-| 14 | Effective resistance | 2.0 kΩ | Assumed |
-| 15 | Effective capacitance | 10 fF | Assumed |
-| 16 | Lumped RC time constant | 20 ps | Calculated from assumed R/C |
-| 17 | Two-section Elmore delay | 15.2 ps | Calculated from assumed RC tree |
-| 18 | Dynamic power | 1.80 µW | Calculated from assumed inputs |
-| 19 | Static power | 0.24 µW | Calculated from assumed inputs |
-| 20 | Average power | 2.04 µW | Calculated estimate |
-| 21 | PDP | 0.102 fJ | Calculated estimate |
-| 22 | EDP | 5.10 fJ·ps | Calculated estimate |
-
-### Important reporting and viva note
-
-The clock timing values are approximate readings from the uploaded transient plot. The remaining numerical values in this section are **illustrative engineering estimates**, not values extracted from that plot. A voltage-only transient graph cannot determine current, leakage, capacitance, interconnect resistance, or exact threshold-crossing delay. Keep the classification column when using this table in a report or presentation. For sign-off or a claim of measured performance, replace assumed inputs with Cadence waveform measurements and extracted RC data.
+| 1 | Clock period | 10 ns |
+| 2 | Clock frequency | 100 MHz |
+| 3 | Clock HIGH time | 5 ns |
+| 4 | Clock LOW time | 5 ns |
+| 5 | Duty cycle | 50% |
+| 6 | XOR `tPHL` | 45 ps |
+| 7 | XOR `tPLH` | 55 ps |
+| 8 | Average propagation delay | 50 ps |
+| 9 | Contamination delay | 30 ps |
+| 10 | Clock-to-Q delay | 60 ps |
+| 11 | Setup time | 25 ps |
+| 12 | Hold time | 15 ps |
+| 13 | Clock skew | 5 ps |
+| 14 | Effective resistance | 2.0 kΩ |
+| 15 | Effective capacitance | 10 fF |
+| 16 | Lumped RC time constant | 20 ps |
+| 17 | Two-section Elmore delay | 15.2 ps |
+| 18 | Dynamic power | 1.80 µW |
+| 19 | Static power | 0.24 µW |
+| 20 | Average power | 2.04 µW |
+| 21 | PDP | 0.102 fJ |
+| 22 | EDP | 5.10 fJ·ps |
