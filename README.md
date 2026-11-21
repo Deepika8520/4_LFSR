@@ -541,3 +541,14 @@ If average power is calculated directly from the total supply current during swi
 3. For post-layout delay and Elmore delay, provide the Quantus/QRC DSPF/SPEF or extracted RC report.
 
 **Reporting status:** Only the clock period, frequency, high/low times and duty cycle above are numerical estimates supported by this screenshot. No numeric propagation-delay or power result is claimed from the screenshot alone. The illustrative examples elsewhere in this README remain assumed examples, not measured project results.
+
+
+---
+
+## Calculation and Performance Analysis
+
+A separate report contains the waveform image and the timing, propagation-delay, RC parasitic, Elmore-delay, dynamic-power, static-power and average-power analysis.
+
+[Open Calculation and Performance Analysis](Calculation_and_Performance_Analysis/README.md)
+
+The report distinguishes approximate values read from the transient waveform from parameters that require Cadence transient-current data or post-layout RC extraction. Values that cannot be established from the screenshot are clearly marked as not determined rather than estimated.
